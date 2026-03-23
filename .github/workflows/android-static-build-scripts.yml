@@ -33,17 +33,17 @@ jobs:
         ndk-version: [ 'r23b', 'r25b' ]
         include:
           - arch: arm64-v8a
-            clang_target: aarch64-linux-android21
-            toolchain_dir: aarch64
+            ndk_arch: arm64
+            target: aarch64-linux-android
           - arch: armeabi-v7a
-            clang_target: armv7a-linux-androideabi21
-            toolchain_dir: arm
+            ndk_arch: arm
+            target: arm-linux-androideabi
           - arch: x86_64
-            clang_target: x86_64-linux-android21
-            toolchain_dir: x86_64
+            ndk_arch: x86_64
+            target: x86_64-linux-android
           - arch: x86
-            clang_target: i686-linux-android21
-            toolchain_dir: x86
+            ndk_arch: x86
+            target: i686-linux-android
     steps:
       - uses: actions/checkout@v4
 
@@ -59,6 +59,14 @@ jobs:
           unzip -q -o ndk.zip -d .ndk
           echo "NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
 
+      - name: create standalone toolchain for ${{ matrix.arch }}
+        run: |
+          $NDK_ROOT/build/tools/make-standalone-toolchain.sh \
+            --arch=${{ matrix.include.ndk_arch }} \
+            --platform=android-21 \
+            --install-dir=$PWD/toolchain \
+            --force
+
       - name: download FFmpeg ${{ github.inputs.ffmpeg_version || '4.4' }}
         run: |
           FFmpeg_VERSION="${{ github.inputs.ffmpeg_version || '4.4' }}"
@@ -69,21 +77,28 @@ jobs:
         run: |
           cd ffmpeg-*
 
-          SYSROOT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.clang_target }}-clang"
-          AR="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"
-          RANLIB="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
-          STRIP="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
+          TARGET_CLANG="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang"
+          TARGET_CXX="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang++"
+          TARGET_AR="$PWD/../toolchain/bin/${{ matrix.include.target }}-ar"
+          TARGET_RANLIB="$PWD/../toolchain/bin/${{ matrix.include.target }}-ranlib"
+          TARGET_STRIP="$PWD/../toolchain/bin/${{ matrix.include.target }}-strip"
+          TARGET_PREFIX="$PWD/../toolchain/bin/${{ matrix.include.target }}-"
+          SYSROOT="$PWD/../toolchain/sysroot"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
             --arch=${{ matrix.arch }} \
-            --cc="$CC" \
-            --ar="$AR" \
-            --ranlib="$RANLIB" \
-            --strip="$STRIP" \
+            --enable-cross-compile \
+            --cross-prefix="$TARGET_PREFIX" \
             --sysroot="$SYSROOT" \
+            --cc="$TARGET_CLANG" \
+            --cxx="$TARGET_CXX" \
+            --ar="$TARGET_AR" \
+            --ranlib="$TARGET_RANLIB" \
+            --strip="$TARGET_STRIP" \
+            --extra-cflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
+            --extra-ldflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
@@ -132,11 +147,11 @@ jobs:
         ndk-version: [ 'r25b' ]
         include:
           - arch: arm64-v8a
-            clang_target: aarch64-linux-android21
-            toolchain_dir: aarch64
+            ndk_arch: arm64
+            target: aarch64-linux-android
           - arch: armeabi-v7a
-            clang_target: armv7a-linux-androideabi21
-            toolchain_dir: arm
+            ndk_arch: arm
+            target: arm-linux-androideabi
     steps:
       - uses: actions/checkout@v4
 
@@ -152,6 +167,14 @@ jobs:
           unzip -q -o ndk.zip -d .ndk
           echo "NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
 
+      - name: create standalone toolchain for ${{ matrix.arch }}
+        run: |
+          $NDK_ROOT/build/tools/make-standalone-toolchain.sh \
+            --arch=${{ matrix.include.ndk_arch }} \
+            --platform=android-21 \
+            --install-dir=$PWD/toolchain \
+            --force
+
       - name: download FFmpeg 4.4 LTS
         run: |
           curl -s "https://ffmpeg.org/releases/ffmpeg-4.4.tar.xz" -o ffmpeg.tar.xz
@@ -161,21 +184,28 @@ jobs:
         run: |
           cd ffmpeg-4.4
 
-          SYSROOT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.clang_target }}-clang"
-          AR="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"
-          RANLIB="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
-          STRIP="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
+          TARGET_CLANG="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang"
+          TARGET_CXX="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang++"
+          TARGET_AR="$PWD/../toolchain/bin/${{ matrix.include.target }}-ar"
+          TARGET_RANLIB="$PWD/../toolchain/bin/${{ matrix.include.target }}-ranlib"
+          TARGET_STRIP="$PWD/../toolchain/bin/${{ matrix.include.target }}-strip"
+          TARGET_PREFIX="$PWD/../toolchain/bin/${{ matrix.include.target }}-"
+          SYSROOT="$PWD/../toolchain/sysroot"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
             --arch=${{ matrix.arch }} \
-            --cc="$CC" \
-            --ar="$AR" \
-            --ranlib="$RANLIB" \
-            --strip="$STRIP" \
+            --enable-cross-compile \
+            --cross-prefix="$TARGET_PREFIX" \
             --sysroot="$SYSROOT" \
+            --cc="$TARGET_CLANG" \
+            --cxx="$TARGET_CXX" \
+            --ar="$TARGET_AR" \
+            --ranlib="$TARGET_RANLIB" \
+            --strip="$TARGET_STRIP" \
+            --extra-cflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
+            --extra-ldflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
