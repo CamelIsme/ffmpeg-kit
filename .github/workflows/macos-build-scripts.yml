@@ -31,6 +31,8 @@ jobs:
   build-main-on-macos-sonoma:
     name: macos main on sonoma
     runs-on: macos-14
+    env:
+      MACOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '15.4', '16.0' ]
@@ -66,6 +68,8 @@ jobs:
   build-main-on-macos-ventura:
     name: macos main on ventura
     runs-on: macos-13
+    env:
+      MACOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '14.3.1', '15.2' ]
@@ -101,6 +105,8 @@ jobs:
   build-lts-on-macos-monterey:
     name: macos lts on monterey
     runs-on: macos-12
+    env:
+      MACOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '13.4.1', '14.2' ]
