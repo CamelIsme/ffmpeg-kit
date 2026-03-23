@@ -31,6 +31,8 @@ jobs:
   build-main-on-macos-sonoma:
     name: ios main on sonoma
     runs-on: macos-14
+    env:
+      IOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '15.4', '16.0' ]
@@ -44,7 +46,7 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: IOS_MIN_VERSION=12.0 PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
+        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
@@ -67,6 +69,8 @@ jobs:
   build-main-on-macos-ventura:
     name: ios main on ventura
     runs-on: macos-13
+    env:
+      IOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '14.3.1', '15.0' ]
@@ -80,7 +84,7 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: IOS_MIN_VERSION=12.0 PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
+        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
@@ -103,6 +107,8 @@ jobs:
   build-main-on-macos-monterey:
     name: ios main on monterey
     runs-on: macos-12
+    env:
+      IOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '13.4.1' ]
@@ -116,7 +122,7 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: IOS_MIN_VERSION=12.0 PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
+        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
@@ -139,6 +145,8 @@ jobs:
   build-lts-on-macos-monterey:
     name: ios lts on monterey
     runs-on: macos-12
+    env:
+      IOS_MIN_VERSION: "12.0"
     strategy:
       matrix:
         xcode: [ '13.4.1' ]
@@ -152,7 +160,7 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: IOS_MIN_VERSION=12.0 PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -l --full --enable-gpl --disable-lib-srt --disable-lib-gnutls --disable-armv7s --disable-arm64e --disable-i386
+        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -l --full --enable-gpl --disable-lib-srt --disable-lib-gnutls --disable-armv7s --disable-arm64e --disable-i386
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
