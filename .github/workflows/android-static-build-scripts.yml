@@ -66,23 +66,19 @@ jobs:
           tar -xJf ffmpeg.tar.xz
 
       - name: configure FFmpeg for ${{ matrix.arch }}
-        env:
-          TARGET: ${{ matrix.include.clang_target }}
-          ARCH: ${{ matrix.arch }}
-          TOOLCHAIN_DIR: ${{ matrix.include.toolchain_dir }}
         run: |
           cd ffmpeg-*
 
           SYSROOT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/$TARGET-clang"
+          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.include.clang_target }}-clang"
           AR="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"
           RANLIB="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
           STRIP="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
 
           ./configure \
-            --prefix=$PWD/../output/$ARCH \
+            --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
-            --arch=$ARCH \
+            --arch=${{ matrix.arch }} \
             --cc="$CC" \
             --ar="$AR" \
             --ranlib="$RANLIB" \
@@ -124,8 +120,8 @@ jobs:
         with:
           name: ffmpeg-android-static-${{ matrix.arch }}-${{ matrix.ndk-version }}
           path: |
-            output/$ARCH/lib/*.a
-            output/$ARCH/include/**
+            output/${{ matrix.arch }}/lib/*.a
+            output/${{ matrix.arch }}/include/**
           retention-days: 7
 
   build-android-static-full:
@@ -162,23 +158,19 @@ jobs:
           tar -xJf ffmpeg.tar.xz
 
       - name: configure FFmpeg full build
-        env:
-          TARGET: ${{ matrix.include.clang_target }}
-          ARCH: ${{ matrix.arch }}
-          TOOLCHAIN_DIR: ${{ matrix.include.toolchain_dir }}
         run: |
           cd ffmpeg-4.4
 
           SYSROOT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/$TARGET-clang"
+          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.include.clang_target }}-clang"
           AR="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"
           RANLIB="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
           STRIP="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
 
           ./configure \
-            --prefix=$PWD/../output/$ARCH \
+            --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
-            --arch=$ARCH \
+            --arch=${{ matrix.arch }} \
             --cc="$CC" \
             --ar="$AR" \
             --ranlib="$RANLIB" \
@@ -222,7 +214,7 @@ jobs:
         with:
           name: ffmpeg-android-static-full-${{ matrix.arch }}-${{ matrix.ndk-version }}
           path: |
-            output/$ARCH/lib/*.a
-            output/$ARCH/include/**
-            output/$ARCH/bin/**
+            output/${{ matrix.arch }}/lib/*.a
+            output/${{ matrix.arch }}/include/**
+            output/${{ matrix.arch }}/bin/**
           retention-days: 7
