@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        ndk-version: [ 'r23b', 'r25b' ]
+        ndk-version: [ 'r23b-linux', 'r25b-linux' ]
         include:
           - arch: arm64-v8a
             ndk_arch: arm64
@@ -55,17 +55,9 @@ jobs:
 
       - name: download NDK
         run: |
-          curl -s "https://dl.google.com/android/repository/android-ndk-${{ matrix.ndk-version }}-linux.zip" -o ndk.zip
+          curl -s "https://dl.google.com/android/repository/android-ndk-${{ matrix.ndk-version }}.zip" -o ndk.zip
           unzip -q -o ndk.zip -d .ndk
           echo "NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
-
-      - name: create standalone toolchain for ${{ matrix.arch }}
-        run: |
-          $NDK_ROOT/build/tools/make-standalone-toolchain.sh \
-            --arch=${{ matrix.include.ndk_arch }} \
-            --platform=android-21 \
-            --install-dir=$PWD/toolchain \
-            --force
 
       - name: download FFmpeg ${{ github.inputs.ffmpeg_version || '4.4' }}
         run: |
@@ -77,13 +69,14 @@ jobs:
         run: |
           cd ffmpeg-*
 
-          TARGET_CLANG="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang"
-          TARGET_CXX="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang++"
-          TARGET_AR="$PWD/../toolchain/bin/${{ matrix.include.target }}-ar"
-          TARGET_RANLIB="$PWD/../toolchain/bin/${{ matrix.include.target }}-ranlib"
-          TARGET_STRIP="$PWD/../toolchain/bin/${{ matrix.include.target }}-strip"
-          TARGET_PREFIX="$PWD/../toolchain/bin/${{ matrix.include.target }}-"
-          SYSROOT="$PWD/../toolchain/sysroot"
+          PREBUILT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64"
+          TARGET_CLANG="$PREBUILT/bin/${{ matrix.include.target }}21-clang"
+          TARGET_CXX="$PREBUILT/bin/${{ matrix.include.target }}21-clang++"
+          TARGET_AR="$PREBUILT/bin/llvm-ar"
+          TARGET_RANLIB="$PREBUILT/bin/llvm-ranlib"
+          TARGET_STRIP="$PREBUILT/bin/llvm-strip"
+          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.include.target }}-"
+          SYSROOT="$PREBUILT/sysroot"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
@@ -144,7 +137,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        ndk-version: [ 'r25b' ]
+        ndk-version: [ 'r25b-linux' ]
         include:
           - arch: arm64-v8a
             ndk_arch: arm64
@@ -163,17 +156,9 @@ jobs:
 
       - name: download NDK
         run: |
-          curl -s "https://dl.google.com/android/repository/android-ndk-${{ matrix.ndk-version }}-linux.zip" -o ndk.zip
+          curl -s "https://dl.google.com/android/repository/android-ndk-${{ matrix.ndk-version }}.zip" -o ndk.zip
           unzip -q -o ndk.zip -d .ndk
           echo "NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
-
-      - name: create standalone toolchain for ${{ matrix.arch }}
-        run: |
-          $NDK_ROOT/build/tools/make-standalone-toolchain.sh \
-            --arch=${{ matrix.include.ndk_arch }} \
-            --platform=android-21 \
-            --install-dir=$PWD/toolchain \
-            --force
 
       - name: download FFmpeg 4.4 LTS
         run: |
@@ -184,13 +169,14 @@ jobs:
         run: |
           cd ffmpeg-4.4
 
-          TARGET_CLANG="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang"
-          TARGET_CXX="$PWD/../toolchain/bin/${{ matrix.include.target }}-clang++"
-          TARGET_AR="$PWD/../toolchain/bin/${{ matrix.include.target }}-ar"
-          TARGET_RANLIB="$PWD/../toolchain/bin/${{ matrix.include.target }}-ranlib"
-          TARGET_STRIP="$PWD/../toolchain/bin/${{ matrix.include.target }}-strip"
-          TARGET_PREFIX="$PWD/../toolchain/bin/${{ matrix.include.target }}-"
-          SYSROOT="$PWD/../toolchain/sysroot"
+          PREBUILT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64"
+          TARGET_CLANG="$PREBUILT/bin/${{ matrix.include.target }}21-clang"
+          TARGET_CXX="$PREBUILT/bin/${{ matrix.include.target }}21-clang++"
+          TARGET_AR="$PREBUILT/bin/llvm-ar"
+          TARGET_RANLIB="$PREBUILT/bin/llvm-ranlib"
+          TARGET_STRIP="$PREBUILT/bin/llvm-strip"
+          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.include.target }}-"
+          SYSROOT="$PREBUILT/sysroot"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
