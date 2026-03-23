@@ -1,6 +1,7 @@
 name: macos build scripts
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - development
@@ -50,6 +51,18 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-macos-${{ matrix.xcode }}-sonoma
+          path: |
+            macos/*.xcframework
+            macos/*.a
+            macos/*.h
+            build.log
+          retention-days: 7
+
   build-main-on-macos-ventura:
     name: macos main on ventura
     runs-on: macos-13
@@ -73,6 +86,18 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-macos-${{ matrix.xcode }}-ventura
+          path: |
+            macos/*.xcframework
+            macos/*.a
+            macos/*.h
+            build.log
+          retention-days: 7
+
   build-lts-on-macos-monterey:
     name: macos lts on monterey
     runs-on: macos-12
@@ -96,3 +121,14 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-macos-lts-${{ matrix.xcode }}-monterey
+          path: |
+            macos/*.xcframework
+            macos/*.a
+            macos/*.h
+            build.log
+          retention-days: 7
