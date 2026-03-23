@@ -70,12 +70,12 @@ jobs:
           cd ffmpeg-*
 
           PREBUILT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64"
-          TARGET_CLANG="$PREBUILT/bin/${{ matrix.include.target }}21-clang"
-          TARGET_CXX="$PREBUILT/bin/${{ matrix.include.target }}21-clang++"
+          TARGET_CLANG="$PREBUILT/bin/${{ matrix.target }}21-clang"
+          TARGET_CXX="$PREBUILT/bin/${{ matrix.target }}21-clang++"
           TARGET_AR="$PREBUILT/bin/llvm-ar"
           TARGET_RANLIB="$PREBUILT/bin/llvm-ranlib"
           TARGET_STRIP="$PREBUILT/bin/llvm-strip"
-          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.include.target }}-"
+          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.target }}-"
           SYSROOT="$PREBUILT/sysroot"
 
           ./configure \
@@ -90,8 +90,8 @@ jobs:
             --ar="$TARGET_AR" \
             --ranlib="$TARGET_RANLIB" \
             --strip="$TARGET_STRIP" \
-            --extra-cflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
-            --extra-ldflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
+            --extra-cflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
+            --extra-ldflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
@@ -170,12 +170,12 @@ jobs:
           cd ffmpeg-4.4
 
           PREBUILT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64"
-          TARGET_CLANG="$PREBUILT/bin/${{ matrix.include.target }}21-clang"
-          TARGET_CXX="$PREBUILT/bin/${{ matrix.include.target }}21-clang++"
+          TARGET_CLANG="$PREBUILT/bin/${{ matrix.target }}21-clang"
+          TARGET_CXX="$PREBUILT/bin/${{ matrix.target }}21-clang++"
           TARGET_AR="$PREBUILT/bin/llvm-ar"
           TARGET_RANLIB="$PREBUILT/bin/llvm-ranlib"
           TARGET_STRIP="$PREBUILT/bin/llvm-strip"
-          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.include.target }}-"
+          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.target }}-"
           SYSROOT="$PREBUILT/sysroot"
 
           ./configure \
@@ -190,8 +190,8 @@ jobs:
             --ar="$TARGET_AR" \
             --ranlib="$TARGET_RANLIB" \
             --strip="$TARGET_STRIP" \
-            --extra-cflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
-            --extra-ldflags="--target=${{ matrix.include.target }} --sysroot=$SYSROOT" \
+            --extra-cflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
+            --extra-ldflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
