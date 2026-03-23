@@ -37,7 +37,7 @@ jobs:
             target: aarch64-linux-android
           - arch: armeabi-v7a
             ndk_arch: arm
-            target: arm-linux-androideabi
+            target: armv7a-linux-androideabi
           - arch: x86_64
             ndk_arch: x86_64
             target: x86_64-linux-android
@@ -144,7 +144,7 @@ jobs:
             target: aarch64-linux-android
           - arch: armeabi-v7a
             ndk_arch: arm
-            target: arm-linux-androideabi
+            target: armv7a-linux-androideabi
     steps:
       - uses: actions/checkout@v4
 
