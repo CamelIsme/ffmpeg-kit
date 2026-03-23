@@ -70,7 +70,7 @@ jobs:
           cd ffmpeg-*
 
           SYSROOT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.include.clang_target }}-clang"
+          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.clang_target }}-clang"
           AR="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"
           RANLIB="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
           STRIP="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
@@ -162,7 +162,7 @@ jobs:
           cd ffmpeg-4.4
 
           SYSROOT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.include.clang_target }}-clang"
+          CC="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.clang_target }}-clang"
           AR="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar"
           RANLIB="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib"
           STRIP="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
