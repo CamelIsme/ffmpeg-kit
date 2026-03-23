@@ -44,7 +44,9 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
+        run: |
+          export IOS_MIN_VERSION=12.0
+          PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
@@ -80,7 +82,9 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
+        run: |
+          export IOS_MIN_VERSION=12.0
+          PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
@@ -116,7 +120,9 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
+        run: |
+          export IOS_MIN_VERSION=12.0
+          PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -x --full --enable-gpl --disable-lib-srt --disable-lib-gnutls
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
@@ -152,7 +158,9 @@ jobs:
       - name: set up xcode
         run: echo "export DEVELOPER_DIR=/Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer" > ~/.xcode.for.ffmpeg.kit.sh
       - name: run the build script
-        run: PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -l --full --enable-gpl --disable-lib-srt --disable-lib-gnutls --disable-armv7s --disable-arm64e --disable-i386
+        run: |
+          export IOS_MIN_VERSION=12.0
+          PATH="/usr/local/opt/bison/bin:$PATH" ./ios.sh -l --full --enable-gpl --disable-lib-srt --disable-lib-gnutls --disable-armv7s --disable-arm64e --disable-i386
       - name: print build logs
         if: ${{ always() }}
         run: cat build.log
