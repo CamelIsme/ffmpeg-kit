@@ -33,17 +33,13 @@ jobs:
         ndk-version: [ 'r23b-linux', 'r25b-linux' ]
         include:
           - arch: arm64-v8a
-            ndk_arch: arm64
-            target: aarch64-linux-android
+            clang_bin: aarch64-linux-android21-clang
           - arch: armeabi-v7a
-            ndk_arch: arm
-            target: armv7a-linux-androideabi
+            clang_bin: arm-linux-androideabi-clang
           - arch: x86_64
-            ndk_arch: x86_64
-            target: x86_64-linux-android
+            clang_bin: x86_64-linux-android21-clang
           - arch: x86
-            ndk_arch: x86
-            target: i686-linux-android
+            clang_bin: i686-linux-android-clang
     steps:
       - uses: actions/checkout@v4
 
@@ -70,28 +66,27 @@ jobs:
           cd ffmpeg-*
 
           PREBUILT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64"
-          TARGET_CLANG="$PREBUILT/bin/${{ matrix.target }}21-clang"
-          TARGET_CXX="$PREBUILT/bin/${{ matrix.target }}21-clang++"
-          TARGET_AR="$PREBUILT/bin/llvm-ar"
-          TARGET_RANLIB="$PREBUILT/bin/llvm-ranlib"
-          TARGET_STRIP="$PREBUILT/bin/llvm-strip"
-          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.target }}-"
+          CLANG="$PREBUILT/bin/${{ matrix.clang_bin }}"
+          AR="$PREBUILT/bin/llvm-ar"
+          RANLIB="$PREBUILT/bin/llvm-ranlib"
+          STRIP="$PREBUILT/bin/llvm-strip"
           SYSROOT="$PREBUILT/sysroot"
+
+          CROSS_PREFIX=$(echo "$CLANG" | sed 's/-clang$/-')
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
             --arch=${{ matrix.arch }} \
             --enable-cross-compile \
-            --cross-prefix="$TARGET_PREFIX" \
+            --cross-prefix="$CROSS_PREFIX" \
             --sysroot="$SYSROOT" \
-            --cc="$TARGET_CLANG" \
-            --cxx="$TARGET_CXX" \
-            --ar="$TARGET_AR" \
-            --ranlib="$TARGET_RANLIB" \
-            --strip="$TARGET_STRIP" \
-            --extra-cflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
-            --extra-ldflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
+            --cc="$CLANG" \
+            --ar="$AR" \
+            --ranlib="$RANLIB" \
+            --strip="$STRIP" \
+            --extra-cflags="--sysroot=$SYSROOT" \
+            --extra-ldflags="--sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
@@ -140,11 +135,9 @@ jobs:
         ndk-version: [ 'r25b-linux' ]
         include:
           - arch: arm64-v8a
-            ndk_arch: arm64
-            target: aarch64-linux-android
+            clang_bin: aarch64-linux-android21-clang
           - arch: armeabi-v7a
-            ndk_arch: arm
-            target: armv7a-linux-androideabi
+            clang_bin: arm-linux-androideabi-clang
     steps:
       - uses: actions/checkout@v4
 
@@ -170,28 +163,27 @@ jobs:
           cd ffmpeg-4.4
 
           PREBUILT="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64"
-          TARGET_CLANG="$PREBUILT/bin/${{ matrix.target }}21-clang"
-          TARGET_CXX="$PREBUILT/bin/${{ matrix.target }}21-clang++"
-          TARGET_AR="$PREBUILT/bin/llvm-ar"
-          TARGET_RANLIB="$PREBUILT/bin/llvm-ranlib"
-          TARGET_STRIP="$PREBUILT/bin/llvm-strip"
-          TARGET_PREFIX="$PREBUILT/bin/${{ matrix.target }}-"
+          CLANG="$PREBUILT/bin/${{ matrix.clang_bin }}"
+          AR="$PREBUILT/bin/llvm-ar"
+          RANLIB="$PREBUILT/bin/llvm-ranlib"
+          STRIP="$PREBUILT/bin/llvm-strip"
           SYSROOT="$PREBUILT/sysroot"
+
+          CROSS_PREFIX=$(echo "$CLANG" | sed 's/-clang$/-')
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
             --arch=${{ matrix.arch }} \
             --enable-cross-compile \
-            --cross-prefix="$TARGET_PREFIX" \
+            --cross-prefix="$CROSS_PREFIX" \
             --sysroot="$SYSROOT" \
-            --cc="$TARGET_CLANG" \
-            --cxx="$TARGET_CXX" \
-            --ar="$TARGET_AR" \
-            --ranlib="$TARGET_RANLIB" \
-            --strip="$TARGET_STRIP" \
-            --extra-cflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
-            --extra-ldflags="--target=${{ matrix.target }} --sysroot=$SYSROOT" \
+            --cc="$CLANG" \
+            --ar="$AR" \
+            --ranlib="$RANLIB" \
+            --strip="$STRIP" \
+            --extra-cflags="--sysroot=$SYSROOT" \
+            --extra-ldflags="--sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
