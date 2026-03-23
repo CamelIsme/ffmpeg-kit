@@ -1,6 +1,16 @@
 name: android build scripts
 
 on:
+  workflow_dispatch:
+    inputs:
+      ndk_version:
+        description: 'NDK Version'
+        required: false
+        default: 'r25b-linux'
+      build_type:
+        description: 'Build Type (main or lts)'
+        required: false
+        default: 'main'
   push:
     branches:
       - development
@@ -56,6 +66,17 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-android-${{ matrix.ndk-version }}
+          path: |
+            android/libs/**/*
+            android/prebuilt/**/*
+            build.log
+          retention-days: 7
+
   build-lts-on-linux:
     name: android lts on linux
     runs-on: ubuntu-22.04
@@ -87,6 +108,17 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-android-lts-${{ matrix.ndk-version }}
+          path: |
+            android/libs/**/*
+            android/prebuilt/**/*
+            build.log
+          retention-days: 7
+
   build-main-on-macos:
     name: android main on macos
     runs-on: macos-12
@@ -116,6 +148,17 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-android-${{ matrix.ndk-version }}-macos
+          path: |
+            android/libs/**/*
+            android/prebuilt/**/*
+            build.log
+          retention-days: 7
+
   build-lts-on-macos:
     name: android lts on macos
     runs-on: macos-12
@@ -145,6 +188,17 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-android-lts-${{ matrix.ndk-version }}-macos
+          path: |
+            android/libs/**/*
+            android/prebuilt/**/*
+            build.log
+          retention-days: 7
+
   build-main-without-ffmpeg-kit-protocols-on-linux:
     name: build without ffmpeg-kit protocols
     runs-on: ubuntu-22.04
@@ -176,3 +230,13 @@ jobs:
       - name: print ffbuild logs
         if: ${{ failure() }}
         run: '[[ -f ./src/ffmpeg/ffbuild/config.log ]] && tail -50 ./src/ffmpeg/ffbuild/config.log'
+      - name: upload artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-kit-android-minimal-${{ matrix.ndk-version }}
+          path: |
+            android/libs/**/*
+            android/prebuilt/**/*
+            build.log
+          retention-days: 7
