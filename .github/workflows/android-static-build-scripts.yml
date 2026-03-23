@@ -72,7 +72,7 @@ jobs:
           STRIP="$PREBUILT/bin/llvm-strip"
           SYSROOT="$PREBUILT/sysroot"
 
-          CROSS_PREFIX=$(echo "$CLANG" | sed 's/-clang$/-')
+          CROSS_PREFIX="${CLANG%-clang}"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
@@ -169,7 +169,7 @@ jobs:
           STRIP="$PREBUILT/bin/llvm-strip"
           SYSROOT="$PREBUILT/sysroot"
 
-          CROSS_PREFIX=$(echo "$CLANG" | sed 's/-clang$/-')
+          CROSS_PREFIX="${CLANG%-clang}"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
