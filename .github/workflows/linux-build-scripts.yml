@@ -48,8 +48,7 @@ jobs:
         with:
           name: ffmpeg-kit-linux-main-ubuntu-22.04
           path: |
-            linux/*.a
-            linux/*.h
+            prebuilt/linux-x86_64/ffmpeg-kit/**/*
             build.log
           retention-days: 7
 
@@ -77,7 +76,6 @@ jobs:
         with:
           name: ffmpeg-kit-linux-lts-ubuntu-22.04
           path: |
-            linux/*.a
-            linux/*.h
+            prebuilt/linux-x86_64-lts/ffmpeg-kit/**/*
             build.log
           retention-days: 7
