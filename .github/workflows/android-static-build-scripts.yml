@@ -66,23 +66,16 @@ jobs:
           AR="$PREBUILT/bin/llvm-ar"
           RANLIB="$PREBUILT/bin/llvm-ranlib"
           STRIP="$PREBUILT/bin/llvm-strip"
-          SYSROOT="$PREBUILT/sysroot"
-
-          CROSS_PREFIX="${CLANG%-clang}"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
             --arch=${{ matrix.arch }} \
             --enable-cross-compile \
-            --cross-prefix="$CROSS_PREFIX" \
-            --sysroot="$SYSROOT" \
             --cc="$CLANG" \
             --ar="$AR" \
             --ranlib="$RANLIB" \
             --strip="$STRIP" \
-            --extra-cflags="--sysroot=$SYSROOT -target ${{ matrix.arch }}" \
-            --extra-ldflags="--sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
@@ -161,23 +154,16 @@ jobs:
           AR="$PREBUILT/bin/llvm-ar"
           RANLIB="$PREBUILT/bin/llvm-ranlib"
           STRIP="$PREBUILT/bin/llvm-strip"
-          SYSROOT="$PREBUILT/sysroot"
-
-          CROSS_PREFIX="${CLANG%-clang}"
 
           ./configure \
             --prefix=$PWD/../output/${{ matrix.arch }} \
             --target-os=android \
             --arch=${{ matrix.arch }} \
             --enable-cross-compile \
-            --cross-prefix="$CROSS_PREFIX" \
-            --sysroot="$SYSROOT" \
             --cc="$CLANG" \
             --ar="$AR" \
             --ranlib="$RANLIB" \
             --strip="$STRIP" \
-            --extra-cflags="--sysroot=$SYSROOT -target ${{ matrix.arch }}" \
-            --extra-ldflags="--sysroot=$SYSROOT" \
             --enable-static \
             --disable-shared \
             --disable-doc \
