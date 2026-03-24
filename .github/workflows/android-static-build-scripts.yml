@@ -51,6 +51,12 @@ jobs:
           unzip -q -o ndk.zip -d .ndk
           echo "NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
 
+      - name: verify clang
+        run: |
+          ls "$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
+          "$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" --version
+          echo 'int main(){}' | "$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" -x c - -o /tmp/test
+
       - name: download FFmpeg ${{ github.inputs.ffmpeg_version || '4.4' }}
         run: |
           FFmpeg_VERSION="${{ github.inputs.ffmpeg_version || '4.4' }}"
@@ -139,6 +145,12 @@ jobs:
           curl -s "https://dl.google.com/android/repository/android-ndk-${{ matrix.ndk-version }}.zip" -o ndk.zip
           unzip -q -o ndk.zip -d .ndk
           echo "NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
+
+      - name: verify clang
+        run: |
+          ls "$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
+          "$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" --version
+          echo 'int main(){}' | "$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" -x c - -o /tmp/test
 
       - name: download FFmpeg 4.4 LTS
         run: |
