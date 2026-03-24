@@ -71,7 +71,7 @@ jobs:
           STRIP="$TOOLCHAIN/bin/llvm-strip"
 
           export CC AR RANLIB STRIP
-          export CFLAGS="--sysroot=$SYSROOT -target $TARGET_HOST$API -DANDROID -DNDEBUG"
+          export CFLAGS="--sysroot=$SYSROOT -target $TARGET_HOST$API -DANDROID -DNDEBUG -Wno-deprecated-declarations -Wno-error"
           export LDFLAGS="--sysroot=$SYSROOT -target $TARGET_HOST$API"
           export PKG_CONFIG_LIBDIR="$SYSROOT/usr/lib/pkgconfig"
           export PKG_CONFIG_SYSROOT_DIR="$SYSROOT"
@@ -93,6 +93,7 @@ jobs:
             --disable-postproc \
             --disable-network \
             --disable-x86asm \
+            --disable-werror \
             --disable-everything \
             --enable-decoder=h264 \
             --enable-decoder=mpeg4 \
