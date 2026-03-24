@@ -2,11 +2,6 @@ name: android static build scripts
 
 on:
   workflow_dispatch:
-    inputs:
-      ndk_version:
-        description: 'NDK Version'
-        required: false
-        default: 'r25b'
   push:
     branches:
       - development
@@ -45,25 +40,83 @@ jobs:
           curl -s "https://dl.google.com/android/repository/android-ndk-${{ matrix.ndk-version }}.zip" -o ndk.zip
           unzip -q -o ndk.zip -d .ndk
           echo "ANDROID_NDK_ROOT=$PWD/.ndk/$(ls .ndk)" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
 
-      - name: build with --no-archive
+      - name: download FFmpeg 4.4 LTS
         run: |
+          curl -s "https://ffmpeg.org/releases/ffmpeg-4.4.tar.xz" -o ffmpeg.tar.xz
+          tar -xJf ffmpeg.tar.xz
+
+      - name: configure FFmpeg for ${{ matrix.arch }}
+        run: |
+          cd ffmpeg-4.4
+
+          NDK="$ANDROID_NDK_ROOT"
+          TOOLCHAIN="$NDK/toolchains/llvm/prebuilt/linux-x86_64"
+          SYSROOT="$TOOLCHAIN/sysroot"
+          API=21
+
           if [[ "${{ matrix.arch }}" == "arm64-v8a" ]]; then
-            ./android.sh --no-archive --disable-x86 --disable-x86-64 --disable-arm-v7a --disable-arm-v7a-neon
+            TARGET_HOST="aarch64-linux-android"
+            ARCH="arm64"
           else
-            ./android.sh --no-archive --disable-arm-v7a --disable-arm-v7a-neon --disable-arm64-v8a
+            TARGET_HOST="x86_64-linux-android"
+            ARCH="x86_64"
           fi
 
-      - name: print build logs
-        if: ${{ always() }}
-        run: cat build.log
+          CC="$TOOLCHAIN/bin/$TARGET_HOST$API-clang"
+          AR="$TOOLCHAIN/bin/llvm-ar"
+          RANLIB="$TOOLCHAIN/bin/llvm-ranlib"
+          STRIP="$TOOLCHAIN/bin/llvm-strip"
+
+          export CC AR RANLIB STRIP
+          export CFLAGS="--sysroot=$SYSROOT -target $TARGET_HOST$API -DANDROID -DNDEBUG"
+          export LDFLAGS="--sysroot=$SYSROOT -target $TARGET_HOST$API"
+          export PKG_CONFIG_LIBDIR="$SYSROOT/usr/lib/pkgconfig"
+          export PKG_CONFIG_SYSROOT_DIR="$SYSROOT"
+
+          ./configure \
+            --prefix=$PWD/../output/$ARCH \
+            --target-os=android \
+            --arch=$ARCH \
+            --enable-cross-compile \
+            --sysroot="$SYSROOT" \
+            --cc="$CC" \
+            --enable-static \
+            --disable-shared \
+            --disable-doc \
+            --disable-programs \
+            --enable-pic \
+            --disable-avdevice \
+            --disable-avfilter \
+            --disable-postproc \
+            --disable-network \
+            --disable-everything \
+            --enable-decoder=h264 \
+            --enable-decoder=mpeg4 \
+            --enable-decoder=vp8 \
+            --enable-decoder=vp9 \
+            --enable-decoder=hevc \
+            --enable-demuxer=mov \
+            --enable-demuxer=matroska \
+            --enable-protocol=file \
+            --enable-swscale \
+            --enable-avcodec \
+            --enable-avutil \
+            --enable-swresample \
+            --enable-avformat
+
+      - name: build FFmpeg static libraries
+        run: |
+          cd ffmpeg-4.4
+          make -j$(nproc)
+          make install
 
       - name: upload artifacts
-        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: ffmpeg-android-static-${{ matrix.arch }}-${{ matrix.ndk-version }}
           path: |
-            prebuilt/**/lib/*.a
-            prebuilt/**/include/**
+            output/$ARCH/lib/*.a
+            output/$ARCH/include/**
           retention-days: 7
